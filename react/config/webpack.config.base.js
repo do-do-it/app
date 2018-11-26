@@ -9,6 +9,11 @@ const webpackConfig = {
 			path.resolve(__dirname, `../${utils.project}/index.js`)
 		]
 	},
+	optimization: {
+		splitChunks: {
+			chunks: 'all'
+		}
+	},
 	plugins: [
 
 	],
