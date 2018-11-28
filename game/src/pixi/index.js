@@ -1,7 +1,9 @@
-import { keyboard } from '../utils'
-let app = new PIXI.Application({ 
-  width: 500,
-  height: 500,
+import { keyboard, contain, randomInt } from '../../libs/utils'
+import * as planck from 'planck-js'
+var world = planck.World()
+console.log(world)
+// PIXI.settings.RESOLUTION = pixelRatio
+let app = new PIXI.Application({
   antialias: true,    // default: false
   transparent: false, // default: false
   resolution: 1       // default: 1
@@ -10,7 +12,7 @@ document.body.appendChild(app.view)
 app.renderer.view.style.position = 'absolute'
 app.renderer.view.style.display = 'block'
 app.renderer.autoResize = true
-app.renderer.resize(window.innerWidth, window.innerHeight)
+app.renderer.resize(window.screen.width, window.screen.height)
 
 const img = require('../../images/logo.png')
 PIXI.loader
@@ -26,50 +28,34 @@ function loadProgressHandler() {
   console.log("progress: " + PIXI.loader.progress + "%")
 }
 
-let s
+let r = 20
+let boals = []
+let nums = 2
 function setup() {
-  s = new PIXI.Sprite(
-    PIXI.loader.resources[img].texture
-  )
-  s.x = 100
-  s.y = 100
-  s.vy = 0
-  s.pivot.set(s.width / 2, s.height / 2)
-  app.stage.addChild(s)
-
-  const down = keyboard(40)
+  for (let i = 0; i < nums; i++) {
+    const ellipse = new PIXI.Graphics()
+    boals.push(ellipse)
+    ellipse.beginFill(0xFFFF00)
+    ellipse.drawCircle(0, 0, r)
+    ellipse.endFill()
+    ellipse.x = randomInt(100, 300)
+    ellipse.y = r - randomInt(0, r)
+    ellipse.vy = randomInt(2, 10)
+    app.stage.addChild(ellipse)
+  }
   
-  down.press = () => {
-    s.vy = 5
-    s.vx = 0
-  }
-  down.release = () => {
-    if (!down.isDown && cat.vx === 0) {
-      cat.vy = 0
-    }
-  }
-
-  let style = new PIXI.TextStyle({
-    fontFamily: "Arial",
-    fontSize: 36,
-    fill: "white",
-    stroke: '#ff3300',
-    strokeThickness: 4,
-    dropShadow: true,
-    dropShadowColor: "#000000",
-    dropShadowBlur: 4,
-    dropShadowAngle: Math.PI / 6,
-    dropShadowDistance: 6,
-  });
-
-  let msg = new PIXI.Text("Hello!", style);
-
-  app.stage.addChild(msg)
+  // const down = keyboard(40)
 
   app.ticker.add(delta => gameLoop(delta));
 }
 
 function gameLoop(delta){
-
-  s.y += s.vy;
+  for (let i = 0; i < boals.length; i++) {
+    const boal = boals[i];
+    boal.y += boal.vy
+    const dir = contain(boal, { x: 0, y: r, width: window.screen.width, height: window.screen.height + r })
+    if (dir === 'top' || dir === 'bottom') {
+      boal.vy *= -1
+    }
+  }
 }
