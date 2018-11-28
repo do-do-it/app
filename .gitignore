@@ -4,5 +4,7 @@ composer.lock
 /runtime
 /application/database.php
 /demo
-/dist
 /toolkit
+dist
+node_modules
+node_modules/*
