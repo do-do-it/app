@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
 const entry = require('./entry')
 const env = require('./env')[process.env.NODE_ENV]
@@ -19,17 +20,30 @@ const config = {
         use: 'babel-loader'
       },
       {
+        test: /\.(png|jpg)$/,
+        use: ['url-loader']
+      },
+      {
+        test: /\.(json)$/,
+        use: ['json-loader']
+      },
+      {
         test: /\.(png|jpg|mp4|mp3)$/,
         exclude: /node_modules/,
         use: 'url-loader'
       }
     ]
   },
-  plugins: entry.pages(),
+  plugins: [
+    new webpack.ProvidePlugin({
+      PIXI: 'pixi.js'
+    })
+  ].concat(entry.pages()),
   resolve: {
     extensions: ['.js', '.less'],
     alias: {
-      'src': path.resolve(__dirname, '../src')
+      'src': path.resolve(__dirname, '../src/'),
+      'static': path.resolve(__dirname, '../static/')
     }
   }
 }

@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const baseConfig = require('./webpack.base.config')
 const htmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const merge = require('webpack-merge')
+const path = require('path')
 const env = require('./env')[process.env.NODE_ENV]
 
 const config = merge(baseConfig, {
@@ -25,8 +26,9 @@ const config = merge(baseConfig, {
     ]
   },
   devServer: {
-    contentBase: env.dist,
+    contentBase: path.join(__dirname, '../'),
     port: env.port,
+    stats: 'errors-only',
     open: false
   },
   plugins: [
