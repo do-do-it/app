@@ -1,6 +1,7 @@
 import {tween} from 'popmotion'
 import core from '../core'
-// import {Gamepad} from '../components'
+import { createTank, createTracks } from '../components/tank'
+import Gamepad from '../components/gamepad'
 
 export default {
   lastTime: 0,
@@ -8,38 +9,27 @@ export default {
   trackIndex: 0,
   setup() {
     this.cantainer = new PIXI.Container()
-    const body = PIXI.Sprite.from('body.blue.png')
-    const barrel = PIXI.Sprite.from('barrel.blue.png')
+    const body = createTank('red')
 
     this.body = body
-    body.anchor.set(.5)
-    body.position.set(10, 10)
-    barrel.anchor.set(.5)
-    barrel.position.set(0, 20)
-    body.addChild(barrel)
+    body.position.set(40, 100)
     body.angle = 0
 
     this.cantainer.addChild(body)
 
-    this.tex = PIXI.Texture.from('track.png')
-    this.tex.frame.height = 20
-    this.tex._updateUvs()
-
     for (let i = 0; i < 10; i++) {
-      const track = new PIXI.Sprite(this.tex)
-      track.height = 20
-      track.anchor.set(.5)
+      const track = createTracks()
       this.tracks.push(track)
     }
   },
 
   update() {
-    this.body.angle -= 0.02
-    this.body.position.set(
-      300 + 200 * Math.sin(this.body.angle),
-      300 + 200 * Math.cos(this.body.angle),
-    )
-    this.body.rotation = Math.PI * .5 - this.body.angle
+    // this.body.angle -= 0.02
+    // this.body.position.set(
+    //   300 + 200 * Math.sin(this.body.angle),
+    //   300 + 200 * Math.cos(this.body.angle),
+    // )
+    // this.body.rotation = Math.PI * .5 - this.body.angle
 
     const now = Date.now()
     if (now - this.lastTime > 1e2) {
@@ -59,14 +49,24 @@ export default {
       })
       this.cantainer.addChild(track)
     }
+
+    if (this.move) {
+      this.body.y += 5
+    }
   },
 
   listen() {
+    new Gamepad().on('down.press', this.moveDown.bind(this, true))
+    .on('down.release', this.moveDown.bind(this, false))
+  },
 
+  moveDown(falge) {
+    this.move = falge
   },
 
   show() {
     this.setup()
+    this.listen()
     core.stage.addChild(this.cantainer)
     core.ticker.add(this.update, this)
   },
