@@ -1,4 +1,4 @@
-function twoForkTree(args) {
+function TwoForkTree(args) {
   var Node = function(key) {
     this.key = key
     this.left = null
@@ -7,9 +7,17 @@ function twoForkTree(args) {
   var root = null
   var insertNode = function(node, newNode) {
     if (node.key > newNode.key) {
-      insertNode(node.left, newNode)
+      if (node.left === null) {
+        node.left = newNode
+      } else {
+        insertNode(node.left, newNode)
+      }
     } else {
-      insertNode(node.right, newNode)
+      if (node.right === null) {
+        node.right = newNode
+      } else {
+        insertNode(node.right, newNode)
+      }
     }
   }
   args.forEach(key => {
@@ -20,7 +28,25 @@ function twoForkTree(args) {
       insertNode(root, newNode)
     }
   });
-  return root
+  this.root = root
+}
+TwoForkTree.prototype = {
+  findNode(key) {
+    let result = null
+    function find(node, key) {
+      if (node.key === key) {
+        result = node
+      } else if (node.key > key) {
+        find(node.left, key)
+      } else {
+        find(node.right, key)
+      }
+    }
+    find(this.root, key)
+    return result
+  }
 }
 
-console.log(twoForkTree([1, 2]))
+const tree = new TwoForkTree([1, 2])
+console.log(tree)
+console.log(tree.findNode(2))
