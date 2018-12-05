@@ -8,7 +8,6 @@ function findIndexOfArray(args, target) {
   args.sort((a, b) => {
     return a - b
   })
-  console.log(args)
   let a, b
   for (let i = 0; i < args.length; i++) {
     const min = args[i];
@@ -28,7 +27,8 @@ function findIndexOfArray(args, target) {
       }
     }
   }
-  console.log(a, b)
+  return [a, b]
 }
 
-findIndexOfArray([3, 1, 6, 2, 8], 12)
+// export default findIndexOfArray
+console.log(findIndexOfArray([3, 1, 6, 2, 8], 3))
