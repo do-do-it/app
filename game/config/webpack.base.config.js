@@ -20,6 +20,11 @@ const config = {
         use: 'babel-loader'
       },
       {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: 'ts-loader'
+      },
+      {
         test: /\.(png|jpg)$/,
         use: ['url-loader']
       },

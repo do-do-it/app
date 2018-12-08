@@ -9,13 +9,14 @@ export default {
   trackIndex: 0,
   setup() {
     this.cantainer = new PIXI.Container()
+    this.gamepad = new Gamepad()
     const body = createTank('red')
 
     this.body = body
     body.position.set(40, 100)
     body.angle = 0
 
-    this.cantainer.addChild(body)
+    this.cantainer.addChild(body, this.gamepad)
 
     for (let i = 0; i < 10; i++) {
       const track = createTracks()
@@ -56,8 +57,8 @@ export default {
   },
 
   listen() {
-    new Gamepad().on('down.press', this.moveDown.bind(this, true))
-    .on('down.release', this.moveDown.bind(this, false))
+    // new Gamepad().on('down.press', this.moveDown.bind(this, true))
+    // .on('down.release', this.moveDown.bind(this, false))
   },
 
   moveDown(falge) {

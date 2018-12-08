@@ -1,51 +1,79 @@
-import keybord from '../../../libs/keybord'
-
-export default class Gamepad {
+import core, { monitor } from '../core'
+import { tween } from 'popmotion'
+export default class Gamepad extends PIXI.Container {
   constructor() {
-    const left = keybord(37)
-    const up = keybord(37)
-    const right = keybord(39)
-    const down = keybord(40)
-    this.events = {}
-    down.press = () => {
-      for (const key in this.events) {
-        if (this.events.hasOwnProperty(key) && key === 'down.press') {
-          const events = this.events[key];
-          if (typeof events === 'function') {
-            events()
-          } else {
-            for (let i = 0; i < events.length; i++) {
-              events[i]()
-            }
-          }
-        }
-      }
-    }
-    down.release = () => {
-      for (const key in this.events) {
-        if (this.events.hasOwnProperty(key) && key === 'down.release') {
-          const events = this.events[key];
-          if (typeof events === 'function') {
-            events()
-          } else {
-            for (let i = 0; i < events.length; i++) {
-              events[i]()
-            }
-          }
-        }
-      }
-    }
+    super()
+    this.drawHandle()
+    this.listen()
     return this
   }
-  on(type, action) {
-    const fun = this.events[type]
-    if (fun && typeof fun === 'function') {
-      this.events[type] = [fun, acorn]
-    } else if (fun && typeof fun === 'araay') {
-      this.events[type].push(action)
-    } else {
-      this.events[type] = action
+  drawHandle() {
+    const handle = new PIXI.Graphics()
+    handle.beginFill(0xffffff)
+    handle.drawCircle(0, 0, 100)
+    handle.endFill()
+    
+    const handleBall = new PIXI.Graphics()
+    handleBall.beginFill(0xeeeeee)
+    handleBall.drawCircle(0, 0, 80)
+    handleBall.endFill()
+
+    this.handle = handle
+    this.handleBall = handleBall
+    handle.addChild(handleBall)
+    handle.position.set(160, 600)
+    this.addChild(handle)
+
+    console.log(this.handle.height)
+  }
+  listen() {
+    this.handleBall.interactive = true
+    this.handleBall.on('pointerdown', ev => {
+      console.log(ev)
+    }).on('pointermove', ev => {
+      const pos = this.getPos(ev.data.global)
+      this.handleBall.position.copy(pos)
+    }).on('pointerup', ev => {
+      tween({
+        from: {
+          x: this.handleBall.x,
+          y: this.handleBall.y
+        },
+        to: {
+          x: 0,
+          y: 0
+        },
+        duration: 200
+      }).start(v => this.handleBall.position.copy(v))
+    }).on('pointerupoutside', ev => {
+      tween({
+        from: {
+          x: this.handleBall.x,
+          y: this.handleBall.y
+        },
+        to: {
+          x: 0,
+          y: 0
+        },
+        duration: 200
+      }).start(v => this.handleBall.position.copy(v))
+    })
+  }
+  getPos(pos) {
+    const defaul = {
+      x: 160,
+      y: 600
     }
-    return this
+    const ps = {
+      x: pos.x - defaul.x,
+      y: pos.y - defaul.y
+    }
+    if (Math.abs(ps.x) > 20) {
+      ps.x = ps.x > 0 ? 20 : -20
+    }
+    if (Math.abs(ps.y) > 20) {
+      ps.y = ps.y > 0 ? 20 : -20
+    }
+    return ps
   }
 }
