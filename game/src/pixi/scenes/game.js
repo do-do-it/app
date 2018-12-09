@@ -1,5 +1,5 @@
 import {tween} from 'popmotion'
-import core from '../core'
+import core, { monitor } from '../core'
 import { createTank, createTracks } from '../components/tank'
 import Gamepad from '../components/gamepad'
 
@@ -59,6 +59,23 @@ export default {
   listen() {
     // new Gamepad().on('down.press', this.moveDown.bind(this, true))
     // .on('down.release', this.moveDown.bind(this, false))
+    monitor.on('tank:move', data => {
+      const pos = {
+        x: this.body.x + data.x,
+        y: this.body.y + data.y
+      }
+      if (pos.x < 0) {
+        pos.x = 0
+      } else if (pos.x > core.view.width) {
+        pos.x = core.view.width
+      }
+      if (pos.y < 0) {
+        pos.y = 0
+      } else if (pos.y > core.view.height) {
+        pos.y = core.view.height
+      }
+      this.body.position.copy(pos)
+    })
   },
 
   moveDown(falge) {

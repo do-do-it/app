@@ -23,16 +23,16 @@ export default class Gamepad extends PIXI.Container {
     handle.addChild(handleBall)
     handle.position.set(160, 600)
     this.addChild(handle)
-
-    console.log(this.handle.height)
   }
   listen() {
     this.handleBall.interactive = true
     this.handleBall.on('pointerdown', ev => {
-      console.log(ev)
+
     }).on('pointermove', ev => {
       const pos = this.getPos(ev.data.global)
+
       this.handleBall.position.copy(pos)
+      monitor.emit('tank:move', pos)
     }).on('pointerup', ev => {
       tween({
         from: {

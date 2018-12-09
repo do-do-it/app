@@ -2,7 +2,7 @@ function tween(option) {
   const
     {
       from, to,
-      duration = 1,
+      duration = 1000,
       ease = t => t,
       yoyo = 0,
       loop = 0
@@ -28,7 +28,7 @@ function tween(option) {
     else ({update, complete} = option)
     let times = Date.now()
     !function run() {
-      t += (1 / 60 / duration) * forward
+      t += (1000 / 60 / duration) * forward
       t > 1 ? t = 1 : t < 0 ? t = 0 : null
 
       if (complex) for (const key in delta) {

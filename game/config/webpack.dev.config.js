@@ -27,6 +27,7 @@ const config = merge(baseConfig, {
   },
   devServer: {
     contentBase: path.join(__dirname, '../'),
+    host: env.ip,
     port: env.port,
     stats: 'errors-only',
     open: false

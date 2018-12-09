@@ -1,9 +1,9 @@
 // 默认帧
-var DEFAULT_INTERVAL = 1000 / 60;
+const DEFAULT_INTERVAL = 1000 / 60;
 /**
  * raf
  */
-var requestAnimationFrame = (function () {
+const requestAnimationFrame = (function () {
 	return window.requestAnimationFrame ||
 		window.webkitRequestAnimationFrame ||
 		window.mozRequestAnimationFrame ||
@@ -17,7 +17,7 @@ var requestAnimationFrame = (function () {
 /**
  * cancel raf
  */
-var cancelAnimationFrame = (function () {
+const cancelAnimationFrame = (function () {
 	return window.cancelAnimationFrame ||
 		window.webkitCancelAnimationFrame ||
 		window.mozCancelAnimationFrame ||
@@ -26,3 +26,23 @@ var cancelAnimationFrame = (function () {
 			window.clearTimeout(id);
 		};
 })();
+
+export default function frameSync() {
+	let id = null
+	let events = []
+
+	function run() {
+		events.forEach(event => event())
+		events = []
+		id && cancelAnimationFrame(id)
+		id = requestAnimationFrame(run)
+	}
+	run()
+
+	function add(event) {
+		events.push(event)
+	}
+	return {
+		add
+	}
+}
